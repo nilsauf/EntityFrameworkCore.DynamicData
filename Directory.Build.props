@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project>
+	<PropertyGroup>
+		<Platform>AnyCPU</Platform>
+		<IsTestProject>$(MSBuildProjectName.Contains('.Test'))</IsTestProject>
+		<DebugType>embedded</DebugType>
+		<GenerateDocumentationFile Condition="!$(IsTestProject)">true</GenerateDocumentationFile>
+
+		<Authors>Nils Aufschlaeger</Authors>
+		<Owners>Nils Aufschlaeger</Owners>
+		<Copyright>Copyright (c) Nils Aufschlaeger 2023</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/nilsauf/EntityFrameworkCore.DynamicData</PackageProjectUrl>
+		<PackageIconUrl></PackageIconUrl>
+		<PackageTags></PackageTags>
+		<PackageReleaseNotes>https://github.com/nilsauf/EntityFrameworkCore.DynamicData</PackageReleaseNotes>
+		<RepositoryUrl>https://github.com/nilsauf/EntityFrameworkCore.DynamicData</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<!-- Embed source files that are not tracked by the source control manager in the PDB -->
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<!-- Include PDB in the built .nupkg -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		
+		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+		<PackageReference Include="GitVersion.MsBuild" Version="5.12.0" PrivateAssets="all" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisLevel>latest</AnalysisLevel>
+	</PropertyGroup>
+</Project>
