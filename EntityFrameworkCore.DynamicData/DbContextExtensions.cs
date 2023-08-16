@@ -2,9 +2,6 @@
 {
 	using global::DynamicData;
 	using Microsoft.EntityFrameworkCore;
-	using Microsoft.EntityFrameworkCore.ChangeTracking;
-	using ReactiveMarbles.ObservableEvents;
-	using System.Reactive.Linq;
 
 	/// <summary>
 	/// Extensions for <see cref="DbContext"/> classes to work with DynamicData
@@ -12,90 +9,37 @@
 	public static class DbContextExtensions
 	{
 		/// <summary>
-		/// Returns a stream of db changes.
-		/// Unlike Connect(), the returned observable is not prepended with the dbs initial items.
+		/// Creates a proxy cache for a specified query from <paramref name="dbContext"/>
 		/// </summary>
-		/// <returns>An observable that emits the change set.</returns>
-		public static IObservable<IChangeSet<TEntity, TKey>> Preview<TDbContext, TEntity, TKey>(
-			this TDbContext db,
+		/// <typeparam name="TDbContext">The correct type of <paramref name="dbContext"/></typeparam>
+		/// <typeparam name="TEntity">The type of entities to track</typeparam>
+		/// <typeparam name="TKey">The type of the key</typeparam>
+		/// <param name="dbContext">The <see cref="DbContext"/> to operate on</param>
+		/// <param name="queryFactory">The <see cref="IQueryable{TEntity}"/> to operate on</param>
+		/// <param name="keyFactory">A factory to generate keys</param>
+		/// <returns>A proxy cache for <paramref name="dbContext"/></returns>
+		/// <exception cref="ArgumentNullException">Thrown if any of the parameters are null</exception>
+		public static IConnectableCache<TEntity, TKey> GetCache<TDbContext, TEntity, TKey>(
+			this TDbContext dbContext,
+			Func<TDbContext, IQueryable<TEntity>> queryFactory,
 			Func<TEntity, TKey> keyFactory)
 			where TDbContext : DbContext
 			where TEntity : class
 			where TKey : notnull
 		{
-			if (db is null)
-				throw new ArgumentNullException(nameof(db));
+			if (dbContext is null)
+				throw new ArgumentNullException(nameof(dbContext));
+
+			if (queryFactory is null)
+				throw new ArgumentNullException(nameof(queryFactory));
+
 			if (keyFactory is null)
 				throw new ArgumentNullException(nameof(keyFactory));
 
-			return Observable.Create<IChangeSet<TEntity, TKey>>(obs =>
-			{
-				var changeTrackerEvents = db.ChangeTracker.Events();
-				return Observable.Merge<EntityEntryEventArgs>(
-						changeTrackerEvents.StateChanged,
-						changeTrackerEvents.Tracked)
-					.Where(args => args.Entry.Entity is TEntity)
-					.Select(CreateChange)
-					.Where(change => change != default)
-					.Select(change => new ChangeSet<TEntity, TKey> { change })
-					.SubscribeSafe(obs);
-
-				Change<TEntity, TKey> CreateChange(EntityEntryEventArgs args)
-				{
-					var state = args.Entry.State;
-					var entity = (TEntity)(args.Entry.Entity);
-					var key = keyFactory(entity);
-
-					Change<TEntity, TKey> result = default;
-
-					switch (state)
-					{
-						case EntityState.Detached:
-							break;
-						case EntityState.Unchanged:
-							result = new(ChangeReason.Refresh, key, entity);
-							break;
-						case EntityState.Deleted:
-							result = new(ChangeReason.Remove, key, entity);
-							break;
-						case EntityState.Modified:
-							result = new(ChangeReason.Update, key, entity);
-							break;
-						case EntityState.Added:
-							result = new(ChangeReason.Add, key, entity);
-							break;
-					}
-
-					return result;
-				}
-			});
-		}
-
-		/// <summary>
-		/// Returns a stream of db changes preceded with the initial state.
-		/// </summary>
-		/// <returns>An observable that emits the change set.</returns>
-		public static IObservable<IChangeSet<TEntity, TKey>> Connect<TDbContext, TEntity, TKey>(
-			this TDbContext db,
-			Func<TDbContext, IQueryable<TEntity>> entitySelector,
-			Func<TEntity, TKey> keyFactory)
-			where TDbContext : DbContext
-			where TEntity : class
-			where TKey : notnull
-		{
-			if (db is null)
-				throw new ArgumentNullException(nameof(db));
-			if (entitySelector is null)
-				throw new ArgumentNullException(nameof(entitySelector));
-			if (keyFactory is null)
-				throw new ArgumentNullException(nameof(keyFactory));
-
-			return Observable.FromAsync(ct => entitySelector(db).ToListAsync(ct))
-				.Select(entities => entities
-					.Select(entity => new Change<TEntity, TKey>(ChangeReason.Add, keyFactory(entity), entity))
-					.ToList())
-				.Select(changes => new ChangeSet<TEntity, TKey>(changes))
-				.Concat(db.Preview(keyFactory));
+			return new DbContextCache<TDbContext, TEntity, TKey>(
+				dbContext,
+				queryFactory(dbContext),
+				keyFactory);
 		}
 	}
 }

@@ -16,7 +16,8 @@
 			var listToAdd = new List<TestEntity> { TestEntity.Peter, TestEntity.Bob };
 			var dbContext = InitInMemoryDB.From("TestDB", TestEntity.Justus);
 
-			var cache = dbContext.Connect(entitySelector, keyFactory).AsObservableCache();
+			var dbCache = dbContext.GetCache(entitySelector, keyFactory);
+			var cache = dbCache.Connect().AsObservableCache();
 
 			dbContext.AddRange(listToAdd);
 			dbContext.SaveChanges();
@@ -30,7 +31,8 @@
 			var listToRemove = new List<TestEntity> { TestEntity.Peter, TestEntity.Bob };
 			var dbContext = InitInMemoryDB.From("TestDB", TestEntity.Justus, TestEntity.Peter, TestEntity.Bob);
 
-			var cache = dbContext.Connect(entitySelector, keyFactory).AsObservableCache();
+			var dbCache = dbContext.GetCache(entitySelector, keyFactory);
+			var cache = dbCache.Connect().AsObservableCache();
 
 			dbContext.RemoveRange(listToRemove);
 			dbContext.SaveChanges();
@@ -47,7 +49,8 @@
 			var entityToModify = new TestEntity { Name = oldName, Description = "Its a test!" };
 			var dbContext = InitInMemoryDB.From("TestDB", TestEntity.Justus, TestEntity.Peter, TestEntity.Bob, entityToModify);
 
-			var cache = dbContext.Connect(entitySelector, keyFactory).AsObservableCache();
+			var dbCache = dbContext.GetCache(entitySelector, keyFactory);
+			var cache = dbCache.Connect().AsObservableCache();
 
 			entityToModify.Name = newName;
 
