@@ -79,8 +79,9 @@
 				throw new ArgumentNullException(nameof(keyFactory));
 
 			return Observable.FromAsync(ct => entitySelector(db).ToListAsync(ct))
-				.Select(entities => entities.Select(entity =>
-					new Change<TEntity, TKey>(ChangeReason.Add, keyFactory(entity), entity)))
+				.Select(entities => entities
+					.Select(entity => new Change<TEntity, TKey>(ChangeReason.Add, keyFactory(entity), entity))
+					.ToList())
 				.Select(changes => new ChangeSet<TEntity, TKey>(changes))
 				.Concat(db.Preview(keyFactory));
 		}
