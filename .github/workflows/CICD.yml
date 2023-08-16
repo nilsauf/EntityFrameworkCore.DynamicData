@@ -58,6 +58,9 @@ jobs:
     needs: build
     if: github.ref_name == 'main' && github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
 
+    permissions:
+      contents: write
+
     steps:
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.10.2
