@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore.DynamicData", "EntityFrameworkCore.DynamicData\EntityFrameworkCore.DynamicData.csproj", "{BC1BC58E-56FF-4FB5-9F04-36FAFD41E9C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkCore.DynamicData", "EntityFrameworkCore.DynamicData\EntityFrameworkCore.DynamicData.csproj", "{BC1BC58E-56FF-4FB5-9F04-36FAFD41E9C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EntityFrameworkCore.DynamicData.Test", "EntityFrameworkCore.DynamicData.Test\EntityFrameworkCore.DynamicData.Test.csproj", "{0338C48C-84C9-4BC4-B228-6C27828AA20A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkCore.DynamicData.Test", "EntityFrameworkCore.DynamicData.Test\EntityFrameworkCore.DynamicData.Test.csproj", "{0338C48C-84C9-4BC4-B228-6C27828AA20A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30D06F3C-426D-4851-9377-9CEC46E77CBC}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,6 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 		GitVersion.yml = GitVersion.yml
 		LICENSE = LICENSE
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{7E68A25D-3472-493F-B7AB-ADA329000078}"
+	ProjectSection(SolutionItems) = preProject
+		dependabot.yml = dependabot.yml
 	EndProjectSection
 EndProject
 Global
@@ -33,6 +38,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7E68A25D-3472-493F-B7AB-ADA329000078} = {30D06F3C-426D-4851-9377-9CEC46E77CBC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1ADE40A-5046-43F4-AA78-71261E730738}
