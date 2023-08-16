@@ -26,6 +26,11 @@ jobs:
         dotnet-version: | 
           6.0.x
           7.0.x
+
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.10.2
+      with:
+        versionSpec: '5.x'
           
     - name: Restore dependencies
       run: dotnet restore
@@ -48,6 +53,7 @@ jobs:
       with:
         name: nuget
         path: '**/*.nupkg'
+
 
     - name: Determine Version
       uses: gittools/actions/gitversion/execute@v0.10.2
