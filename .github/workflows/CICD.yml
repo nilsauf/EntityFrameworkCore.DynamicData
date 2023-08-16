@@ -64,12 +64,11 @@ jobs:
       with:
         name: nuget  
 
-    - name: Git Version
-      uses: codacy/git-version@2.4.0
+    - name: Determine Version
+      uses: gittools/actions/gitversion/execute@v0.10.2
       id: version
       with:
-        release-branch: main
-        dev-branch: develop
+        useConfigFile: true
         
     - name: Changelog
       uses: glennawatson/ChangeLog@v1
@@ -80,8 +79,8 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.AssemblySemVer }}
+          release_name: ${{ steps.version.outputs.AssemblySemVer }}
           body: |
             ${{ steps.changelog.outputs.commitLog }}
 
