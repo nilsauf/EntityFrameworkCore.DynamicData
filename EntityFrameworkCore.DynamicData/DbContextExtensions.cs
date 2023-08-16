@@ -6,8 +6,16 @@
 	using ReactiveMarbles.ObservableEvents;
 	using System.Reactive.Linq;
 
+	/// <summary>
+	/// Extensions for <see cref="DbContext"/> classes to work with DynamicData
+	/// </summary>
 	public static class DbContextExtensions
 	{
+		/// <summary>
+		/// Returns a stream of db changes.
+		/// Unlike Connect(), the returned observable is not prepended with the dbs initial items.
+		/// </summary>
+		/// <returns>An observable that emits the change set.</returns>
 		public static IObservable<IChangeSet<TEntity, TKey>> Preview<TDbContext, TEntity, TKey>(
 			this TDbContext db,
 			Func<TEntity, TKey> keyFactory)
@@ -63,6 +71,10 @@
 			});
 		}
 
+		/// <summary>
+		/// Returns a stream of db changes preceded with the initial state.
+		/// </summary>
+		/// <returns>An observable that emits the change set.</returns>
 		public static IObservable<IChangeSet<TEntity, TKey>> Connect<TDbContext, TEntity, TKey>(
 			this TDbContext db,
 			Func<TDbContext, IQueryable<TEntity>> entitySelector,
