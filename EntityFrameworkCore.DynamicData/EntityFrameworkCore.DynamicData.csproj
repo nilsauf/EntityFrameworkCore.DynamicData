@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamicData" Version="8.1.1" />
+    <PackageReference Include="DynamicData" Version="8.3.25" />
     <PackageReference Include="ReactiveMarbles.ObservableEvents.SourceGenerator" Version="1.3.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
